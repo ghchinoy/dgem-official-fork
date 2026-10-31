@@ -443,9 +443,10 @@ labelled examples of its own decisions. It rescales confidence and hesitation wi
 
 ---
 
-## 4. Multimodal Vision & Audio Inspection (`templates/multimodal/`)
+## 4. Multimodal Vision Inspection (`templates/multimodal/`)
 
-[DiffusionGemma](https://gemma.ai/models/diffusiongemma/) natively accepts image files (PNG, JPEG, WebP) directly alongside text state inputs.
+[DiffusionGemma](https://gemma.ai/models/diffusiongemma/) accepts image files (PNG, JPEG, WebP, GIF) alongside text state inputs. It is a text + image model: video
+works as sampled frames sent as images, and audio is not supported (the call-quality template reads a transcript).
 
 <Tabs>
   <TabItem label="UI Design & Accessibility Review">
@@ -644,7 +645,7 @@ labelled examples of its own decisions. It rescales confidence and hesitation wi
   <TabItem label="Contact Center Call Quality">
     **File**: `templates/multimodal/call_quality_audio.json.tmpl`
 
-    Evaluates customer service interactions across disclosure compliance, first-contact resolution, agent empathy, and final customer sentiment.
+    Evaluates customer service interactions across disclosure compliance, first-contact resolution, agent empathy, and final customer sentiment. Text only: the input is a call transcript (optionally with acoustic tags from your speech-to-text step), not audio.
 
     ```json
     {
