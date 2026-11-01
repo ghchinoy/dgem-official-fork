@@ -33,7 +33,7 @@ If you are authoring your first `.json.tmpl` file, think of a `dgem` template as
 
 ### The Three Building Blocks (`boolean`, `choice`, `score`)
 
-Because DiffusionGemma evaluates all questions on a bidirectional `[MASK]` canvas simultaneously, **asking 5 questions takes about the same GPU forward-pass latency as asking 1 question**:
+Because [DiffusionGemma](https://gemma.ai/models/diffusiongemma/) evaluates all questions on a bidirectional `[MASK]` canvas simultaneously, **asking 5 questions takes about the same GPU forward-pass latency as asking 1 question**:
 
 1. **`"type": "boolean"` (Yes/No Gate)**: Maps to two tokens (`yes` / `no`) and returns calibrated probability $P(\text{yes})$ and normalized entropy $\tilde{H} \in [0, 1]$.
 2. **`"type": "choice"` (Mutually Exclusive Label, `2..26` Options)**: Maps each option to a single uppercase ASCII letter (`A`–`Z`). Adding a `"description"` field to each option teaches `dgemma` your exact domain rubric zero-shot without fine-tuning.
@@ -127,7 +127,7 @@ labelled examples of its own decisions. It rescales confidence and hesitation wi
   <TabItem label="Taxonomy Discovery ('other')">
     **File**: `templates/taxonomy_discovery.json.tmpl`
 
-    Groups unclassified (`"other"`) inputs, evaluates `in_taxonomy` (`boolean`), `novelty_score` (`score`), and a conditional `expansion_driver` (`ask_if: {"primary_category": ["other"]}`), and synthesizes a new `{"name", "description"}` option via DiffusionGemma's `"think": 48` channel (see [Unclassified Grouping & Taxonomy Discovery](/dgem/policies/taxonomy-discovery/)).
+    Groups unclassified (`"other"`) inputs, evaluates `in_taxonomy` (`boolean`), `novelty_score` (`score`), and a conditional `expansion_driver` (`ask_if: {"primary_category": ["other"]}`), and synthesizes a new `{"name", "description"}` option via [DiffusionGemma](https://gemma.ai/models/diffusiongemma/)'s `"think": 48` channel (see [Unclassified Grouping & Taxonomy Discovery](/dgem/policies/taxonomy-discovery/)).
 
     ```bash
     ./bin/dgem decide -t templates/taxonomy_discovery.json.tmpl \
@@ -429,7 +429,7 @@ labelled examples of its own decisions. It rescales confidence and hesitation wi
 
 ## 4. Multimodal Vision & Audio Inspection (`templates/multimodal/`)
 
-DiffusionGemma natively accepts image files (PNG, JPEG, WebP) directly alongside text state inputs.
+[DiffusionGemma](https://gemma.ai/models/diffusiongemma/) natively accepts image files (PNG, JPEG, WebP) directly alongside text state inputs.
 
 <Tabs>
   <TabItem label="UI Design & Accessibility Review">
@@ -679,7 +679,7 @@ DiffusionGemma natively accepts image files (PNG, JPEG, WebP) directly alongside
 
 ## 5. Public Dataset Calibration & Guardrails (`templates/calibration/`)
 
-Evaluated by `dgem bench-calibration`, these 6 templates anchor DiffusionGemma's slot probabilities and Shannon entropy $H$ against gold human distributions and adversarial security benchmarks:
+Evaluated by `dgem bench-calibration`, these 6 templates anchor [DiffusionGemma](https://gemma.ai/models/diffusiongemma/)'s slot probabilities and Shannon entropy $H$ against gold human distributions and adversarial security benchmarks:
 
 <Tabs>
   <TabItem label="AgentDrift Trajectory Hijack">
@@ -738,7 +738,7 @@ Evaluated by `dgem bench-calibration`, these 6 templates anchor DiffusionGemma's
   <TabItem label="ChaosNLI & ANLI">
     **File**: `templates/calibration/chaos_nli.json.tmpl`
 
-    3-way natural language inference (`entailment`, `neutral`, `contradiction`) calibrated against `ChaosNLI` (100 human annotations per item) and adversarial `ANLI` to prove that DiffusionGemma's Shannon entropy $H$ correlates with human annotator disagreement.
+    3-way natural language inference (`entailment`, `neutral`, `contradiction`) calibrated against `ChaosNLI` (100 human annotations per item) and adversarial `ANLI` to prove that [DiffusionGemma](https://gemma.ai/models/diffusiongemma/)'s Shannon entropy $H$ correlates with human annotator disagreement.
 
     ```bash
     ./bin/dgem decide -t templates/calibration/chaos_nli.json.tmpl \

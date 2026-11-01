@@ -12,7 +12,7 @@ covered in [Gateway and routing](/dgem/deploy/gateway/).
 
 ## 1. Stage 2 Gemini Cascade (`gemini-3.8-flash` Default) in Batch Eval, `/api/decide`, and MCP
 
-When Stage 1 (`DiffusionGemma`) encounters an ambiguous input (where restricted-softmax Shannon entropy $H \ge 0.35\text{ nats}$, e.g. `ChaosNLI` human-disagreement items or complex multi-hop `ANLI-R3` contradictions), `dgem` can automatically escalate that item to a **Stage 2 Gemini Cascade**.
+When Stage 1 ([`DiffusionGemma`](https://gemma.ai/models/diffusiongemma/)) encounters an ambiguous input (where restricted-softmax Shannon entropy $H \ge 0.35\text{ nats}$, e.g. `ChaosNLI` human-disagreement items or complex multi-hop `ANLI-R3` contradictions), `dgem` can automatically escalate that item to a **Stage 2 Gemini Cascade**.
 
 > [!IMPORTANT]
 > **Supported Stage 2 Gemini Models**: Use **`gemini-3.8-flash`** (default) or **`gemini-3.5-flash-lite`** via standard Vertex AI `generateContent` routes.

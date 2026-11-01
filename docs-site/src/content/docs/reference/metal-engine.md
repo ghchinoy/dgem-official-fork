@@ -3,15 +3,15 @@ title: Setup & Metal Engine Guide
 description: Step-by-step instructions for running DiffusionGemma locally on Apple Silicon Metal.
 ---
 
-This guide covers setting up, running, and querying **DiffusionGemma 26B-A4B** locally on Apple Silicon (tested on Apple M5 with 32 GB unified memory) using **`diffgemma`** (a native Rust + Metal inference engine) and **`dgem`** (a Go-based CLI assistant for structured decisions and generative queries).
+This guide covers setting up, running, and querying **[DiffusionGemma](https://gemma.ai/models/diffusiongemma/) 26B-A4B** locally on Apple Silicon (tested on Apple M5 with 32 GB unified memory) using **`diffgemma`** (a native Rust + Metal inference engine) and **`dgem`** (a Go-based CLI assistant for structured decisions and generative queries).
 
 ---
 
 ## 1. Overview & Architectural Concepts
 
-**DiffusionGemma** (developed by Google DeepMind) is a 26B-parameter Mixture-of-Experts (MoE) foundation model with 3.8B active parameters (8 active experts out of 128 total + 1 shared expert).
+**[DiffusionGemma](https://gemma.ai/models/diffusiongemma/)** (developed by Google DeepMind) is a 26B-parameter Mixture-of-Experts (MoE) foundation model with 3.8B active parameters (8 active experts out of 128 total + 1 shared expert).
 
-Unlike traditional autoregressive language models that generate text token-by-token from left to right, DiffusionGemma utilizes **discrete block diffusion**:
+Unlike traditional autoregressive language models that generate text token-by-token from left to right, [DiffusionGemma](https://gemma.ai/models/diffusiongemma/) utilizes **discrete block diffusion**:
 * **Canvas-based generation**: It operates on a 256-token canvas with bidirectional cross-attention.
 * **Parallel denoising**: It iteratively denoises blocks of tokens in parallel, generating 15–20 tokens per forward pass.
 * **Fast structured decisions ("System-1" Judgment)**: By seeding a canvas with a predefined JSON template and leaving answer slots as noise, the model can evaluate classification, categorization, and scale choices in **a single forward pass (~880 ms)** without generating conversational filler.
@@ -27,7 +27,7 @@ In early structured-decision schemas, binary decisions were labeled with the neo
 
 ## 2. Hardware & Memory Tuning for 32 GB Macs
 
-DiffusionGemma's full-precision BF16 checkpoint is ~50 GB, which cannot fit into 32 GB of RAM. However, the 4-bit quantized pack (`mmastrac/diffgemma-26b-a4b-it-q4`) compresses the MoE experts into 4-bit affine blocks while keeping precision-sensitive attention, norms, and embeddings in 16-bit, resulting in an **18.84 GiB** resident footprint.
+[DiffusionGemma](https://gemma.ai/models/diffusiongemma/)'s full-precision BF16 checkpoint is ~50 GB, which cannot fit into 32 GB of RAM. However, the 4-bit quantized pack (`mmastrac/diffgemma-26b-a4b-it-q4`) compresses the MoE experts into 4-bit affine blocks while keeping precision-sensitive attention, norms, and embeddings in 16-bit, resulting in an **18.84 GiB** resident footprint.
 
 ### Unified Memory Budgeting
 
@@ -135,7 +135,7 @@ Expected response:
 }
 ```
 
-> **Cloud Deployment**: If you want to host DiffusionGemma on Google Cloud Run with an NVIDIA RTX Pro 6000 or L4 GPU instead of running locally, see the [Remote Endpoints & Cloud Deployment Guide](/dgem/deploy/remote-gpu/) or run `make cloudrun-deploy`.
+> **Cloud Deployment**: If you want to host [DiffusionGemma](https://gemma.ai/models/diffusiongemma/) on Google Cloud Run with an NVIDIA RTX Pro 6000 or L4 GPU instead of running locally, see the [Remote Endpoints & Cloud Deployment Guide](/dgem/deploy/remote-gpu/) or run `make cloudrun-deploy`.
 
 ---
 

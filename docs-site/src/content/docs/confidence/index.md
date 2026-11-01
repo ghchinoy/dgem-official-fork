@@ -9,7 +9,7 @@ why `dgem` decisions can be trusted, start with [Confidence beyond Shannon: hesi
 
 ## What you get with every answer
 
-DiffusionGemma fills in all answer slots of a policy at once and returns, for each question, a **probability for
+[DiffusionGemma](https://gemma.ai/models/diffusiongemma/) fills in all answer slots of a policy at once and returns, for each question, a **probability for
 every allowed answer** (not just a label). From those probabilities `dgem` derives:
 
 | Signal | What it is | Where you see it |

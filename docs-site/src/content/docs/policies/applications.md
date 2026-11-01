@@ -3,7 +3,7 @@ title: Real-World Applications & Production Patterns
 description: High-value architectural patterns for DiffusionGemma in agentic routing, DevSecOps, SIEM alert triage, and high-scale evaluations.
 ---
 
-This guide explores high-value real-world production architectures enabled by **DiffusionGemma** and **Discrete Diffusion Slot Readout**. By transforming generative language models into sub-second, mathematically calibrated judgment engines, teams can deploy AI for tasks where standard autoregressive LLMs are either **too slow**, **too expensive**, or **too syntactically fragile**.
+This guide explores high-value real-world production architectures enabled by **[DiffusionGemma](https://gemma.ai/models/diffusiongemma/)** and **Discrete Diffusion Slot Readout**. By transforming generative language models into sub-second, mathematically calibrated judgment engines, teams can deploy AI for tasks where standard autoregressive LLMs are either **too slow**, **too expensive**, or **too syntactically fragile**.
 
 ---
 
@@ -25,7 +25,7 @@ Standard LLMs are deliberative "System-2" engines: they generate text token-by-t
 Autonomous agents (e.g. coding assistants, workflow orchestrators) often spend **several seconds** asking a frontier model a trivial question: *"Which tool should I call next?"*. This creates severe latency bottlenecks and inflates API costs.
 
 ### The Architecture
-Deploy DiffusionGemma as a sub-second pre-flight dispatcher. The agent pipes current state into a 4-choice template, and DiffusionGemma immediately returns the tool selection.
+Deploy [DiffusionGemma](https://gemma.ai/models/diffusiongemma/) as a sub-second pre-flight dispatcher. The agent pipes current state into a 4-choice template, and [DiffusionGemma](https://gemma.ai/models/diffusiongemma/) immediately returns the tool selection.
 
 ```
 User Prompt / Conversation State
@@ -133,7 +133,7 @@ Security Operations Centers (SOCs) face alert fatigue: ingestion pipelines recei
 ### The Architecture
 Using **Cloud Run with GPUs** and vLLM's continuous batching, a single NVIDIA GPU evaluates many decisions per second (measure yours with the [regression matrix](/dgem/operate/regression-matrix/) and [latency and capacity](/dgem/operate/latency-capacity/) guides):
 1. Cloud Pub/Sub pushes security alerts to a Cloud Run webhook.
-2. DiffusionGemma evaluates three slots in parallel:
+2. [DiffusionGemma](https://gemma.ai/models/diffusiongemma/) evaluates three slots in parallel:
    - `data_compromise`: `boolean` (Is data exfiltration suspected?)
    - `action`: `choice` (`monitor`, `revoke_key`, `isolate_host`, `page_oncall`)
    - `severity`: `score` (`p3_low` to `p0_critical`)
@@ -148,7 +148,7 @@ Using **Cloud Run with GPUs** and vLLM's continuous batching, a single NVIDIA GP
 Customer support tickets arrive with complex, multi-faceted intents. A single email can simultaneously describe a service bug, demand a refund, and express extreme dissatisfaction. Standard classifiers require separate models for routing, sentiment, and SLA escalation.
 
 ### The Solution
-DiffusionGemma evaluates **all three dimensions in a single forward pass**:
+[DiffusionGemma](https://gemma.ai/models/diffusiongemma/) evaluates **all three dimensions in a single forward pass**:
 * **Urgency**: `boolean` (Determines SLA tier: 15-minute response vs. standard queue).
 * **Department Routing**: `choice` (`billing`, `support`, `engineering`).
 * **Customer Distress**: `score` (`calm`, `frustrated`, `furious`).
@@ -212,9 +212,9 @@ Use discrete slot readout to grade model outputs against structured evaluation r
 
 ## 6. Multimodal Visual, Video & Audio Assessment Patterns
 
-DiffusionGemma natively incorporates a ~550M parameter **SigLIP vision tower**, allowing visual inputs (single images, documents, and sequential video frames) to be prefilled directly into the KV cache.
+[DiffusionGemma](https://gemma.ai/models/diffusiongemma/) natively incorporates a ~550M parameter **SigLIP vision tower**, allowing visual inputs (single images, documents, and sequential video frames) to be prefilled directly into the KV cache.
 
-> **What dgem accepts:** text and images. DiffusionGemma is a text + image model (the Gemma 4 base has wider
+> **What dgem accepts:** text and images. [DiffusionGemma](https://gemma.ai/models/diffusiongemma/) is a text + image model (the [Gemma 4](https://gemma.ai) base has wider
 > multimodal support; this checkpoint has no audio encoder). **Video** works only as frames you sample yourself and
 > send as images. **Audio** is not supported: send a transcript as text (the call-quality template below does this).
 > Requests that carry `audio` or `video`/`videos` fields (or audio/video content parts) are refused with HTTP 400
@@ -234,7 +234,7 @@ When combined with discrete diffusion slot readout, multimodal queries bypass th
 
 ### Multimodal Best Practices
 1. **Modality Order**: Always place image parts **before** text prompts in the input array.
-2. **Visual Token Budgets**: DiffusionGemma supports variable resolution by setting token budgets (**70, 140, 280, 560, or 1120 tokens**). Use lower budgets (70–140) for rapid video frame triage, and higher budgets (560–1120) for small defect inspection or dense document OCR.
+2. **Visual Token Budgets**: [DiffusionGemma](https://gemma.ai/models/diffusiongemma/) supports variable resolution by setting token budgets (**70, 140, 280, 560, or 1120 tokens**). Use lower budgets (70–140) for rapid video frame triage, and higher budgets (560–1120) for small defect inspection or dense document OCR.
 3. **Sequential Video Frames**: Sample video frames at 1 fps (up to 60 frames) and supply them as a sequence of image parts.
 
 ### Production Multimodal Templates (`templates/multimodal/`)

@@ -6,7 +6,7 @@ description: "A hands-on tutorial: write a dgem decision policy (.json.tmpl), ru
 # Your First Decision Policy
 
 In `dgem`, a **decision policy** is a small template file (`.json.tmpl`) that lists the questions you want answered
-about an input. DiffusionGemma answers all of them at once, in one forward pass, and returns a probability for
+about an input. [DiffusionGemma](https://gemma.ai/models/diffusiongemma/) answers all of them at once, in one forward pass, and returns a probability for
 every allowed answer. This tutorial builds a policy for reviewing customer refund requests, step by step.
 
 You need a running engine and the CLI ([Run on your laptop](../deploy/laptop.md) or

@@ -16,7 +16,6 @@
 
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import catppuccin from '@catppuccin/starlight';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
@@ -46,6 +45,11 @@ function remarkMermaid() {
 export default defineConfig({
   site: 'https://googlecloudplatform.github.io',
   base: '/dgem',
+  vite: {
+    build: {
+      cssTarget: 'esnext',
+    },
+  },
   markdown: {
     remarkPlugins: [remarkMermaid, remarkMath],
     rehypePlugins: [rehypeKatex],
@@ -72,7 +76,7 @@ export default defineConfig({
   },
   integrations: [
     starlight({
-      title: 'DiffusionGemma',
+      title: 'dgem - Decision Gemma',
       description: 'DiffusionGemma as a Zero-Shot Decision Model & Declarative Policy-as-Template Engine across Apple Silicon, GCE, and Cloud Run',
       social: [
         { icon: 'github', label: 'GitHub', href: 'https://github.com/GoogleCloudPlatform/dgem' },
@@ -213,7 +217,7 @@ export default defineConfig({
                 startOnLoad: false,
                 theme: isDark ? 'dark' : 'default',
                 securityLevel: 'loose',
-                fontFamily: 'Inter, system-ui, sans-serif',
+                fontFamily: 'Google Sans Flex, system-ui, sans-serif',
                 flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
                 themeVariables: { fontSize: '15px' },
               });
@@ -242,12 +246,6 @@ export default defineConfig({
             obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
           `,
         },
-      ],
-      plugins: [
-        catppuccin({
-          light: { flavor: 'latte', accent: 'mauve' },
-          dark: { flavor: 'mocha', accent: 'mauve' },
-        }),
       ],
       customCss: [
         'katex/dist/katex.min.css',

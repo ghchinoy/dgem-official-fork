@@ -3,7 +3,7 @@ title: "Confidence beyond Shannon: hesitation-gated decisions"
 description: "Why you can trust a dgem decision: a probability for every allowed answer from one pass, a hesitation score that flags uncertain answers, hand-off to a larger model, and the prompt, calibration and evaluation practices behind them."
 ---
 
-`dgem` turns DiffusionGemma into a **decision model**: you describe a decision as a few typed questions, and for every
+`dgem` turns [DiffusionGemma](https://gemma.ai/models/diffusiongemma/) into a **decision model**: you describe a decision as a few typed questions, and for every
 question you get **a probability for every allowed answer** from a single forward pass. This page explains how those
 probabilities become decisions you can trust: a **hesitation score** that flags uncertain answers, a **gate** that hands
 them to a larger model or a person, and the prompt, calibration and evaluation practices that keep both honest.

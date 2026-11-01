@@ -5,7 +5,7 @@ description: "A step-by-step evaluation guide for teams hosting DiffusionGemma t
 
 # Evaluate dgem on Your Own GPU
 
-This guide is for teams that host DiffusionGemma themselves and want to know two things: **is the install
+This guide is for teams that host [DiffusionGemma](https://gemma.ai/models/diffusiongemma/) themselves and want to know two things: **is the install
 working correctly**, and **how well does it work on our decisions**. Run the steps in order; each has a pass
 criterion, so a problem found in step 3 is not mistaken for a model limitation in step 5.
 
