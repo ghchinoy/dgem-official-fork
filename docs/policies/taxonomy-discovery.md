@@ -3,11 +3,11 @@ title: Unclassified Grouping & Taxonomy Discovery
 description: How dgem handles unknown/out-of-scope ("other") inputs, detects taxonomy gaps via epistemic Shannon entropy H, and automatically proposes new {"name", "description"} choice options.
 ---
 
-A common question when moving from open-ended autoregressive LLMs to a **Zero-Shot Decision Model** (`DiffusionGemma`) is:
+A common question when moving from open-ended autoregressive LLMs to a **Zero-Shot Decision Model** ([`DiffusionGemma`](https://gemma.ai/models/diffusiongemma/)) is:
 
-> *"If `dgem` evaluates fixed `[A–Z]` choice slots on a discrete diffusion canvas, how do we group unclassified (`unknown` / `other`) inputs—and since DiffusionGemma is built on Gemma, can `dgem` suggest new category expansions?"*
+> *"If `dgem` evaluates fixed `[A–Z]` choice slots on a discrete diffusion canvas, how do we group unclassified (`unknown` / `other`) inputs—and since [DiffusionGemma](https://gemma.ai/models/diffusiongemma/) is built on [Gemma](https://gemma.ai), can `dgem` suggest new category expansions?"*
 
-**Yes.** Because `dgem` runs **`google/diffusiongemma-26B-A4B-it`** (a Gemma 4 26B-A4B MoE foundation model) alongside restricted-softmax slot readout and Stage-2 cascades, it supports **both zero-overhead unclassified detection (`other` / `oos` + Shannon entropy $H$) and automated `{"name", "description"}` option synthesis**.
+**Yes.** Because `dgem` runs **`google/diffusiongemma-26B-A4B-it`** (a [Gemma 4](https://gemma.ai) 26B-A4B MoE foundation model) alongside restricted-softmax slot readout and Stage-2 cascades, it supports **both zero-overhead unclassified detection (`other` / `oos` + Shannon entropy $H$) and automated `{"name", "description"}` option synthesis**.
 
 ---
 
@@ -16,7 +16,7 @@ A common question when moving from open-ended autoregressive LLMs to a **Zero-Sh
 In `dgem`'s primary decision path (`structured_server.py`), every `"type": "choice"` question maps its options (`2..26` alternatives) to single uppercase ASCII tokens (`A`–`Z`) on a bidirectional `[MASK]` canvas.
 
 * **Why `[A–Z]` slot readout is separated from label invention**: Unmasking a single token (`A`–`Z`) per question guarantees **low $O(1)$ latency** (one forward pass), **100% enum compliance**, and **exact restricted-softmax probabilities** ($p_k = \exp(\ell_k) / \sum_j \exp(\ell_j)$).
-* **How new classes are proposed**: When an input lands in the `"other"` catch-all slot—or exhibits high **Shannon entropy** ($H = -\sum p_k \ln p_k \ge 0.35\text{ nats}$) across existing slots—`dgem` activates **DiffusionGemma's `"think"` channel** (`<|channel>thought...<channel|>`) or **Stage-2 Gemini 3.8 Flash** to synthesize a copy-pasteable `{"name", "description"}` option.
+* **How new classes are proposed**: When an input lands in the `"other"` catch-all slot—or exhibits high **Shannon entropy** ($H = -\sum p_k \ln p_k \ge 0.35\text{ nats}$) across existing slots—`dgem` activates **[DiffusionGemma](https://gemma.ai/models/diffusiongemma/)'s `"think"` channel** (`<|channel>thought...<channel|>`) or **Stage-2 Gemini 3.8 Flash** to synthesize a copy-pasteable `{"name", "description"}` option.
 
 ```mermaid
 flowchart TD
@@ -55,7 +55,7 @@ You do not need to rewrite existing `.json.tmpl` policies to discover missing ca
    }
    ```
 2. **Pass-1 Detection (`other*` or $H \ge 0.35\text{ nats}$)**: Evaluates the schema in a single fast pass. If all `choice` slots match known options with low entropy ($H < 0.35\text{ nats}$), `dgem` exits immediately with zero generative overhead.
-3. **Triggered Option Proposal (`SynthesizeTaxonomyExpansions`)**: If any `choice` slot selects `"other_unclassified"` or exceeds `--expansion-entropy`, `dgem` uses DiffusionGemma's `"think"` channel (thought budget raised to 120 tokens, with Stage-2 `gemini-3.8-flash` fallback) using the existing option rubrics and Stage-1 probability priors, printing an actionable expansion hint:
+3. **Triggered Option Proposal (`SynthesizeTaxonomyExpansions`)**: If any `choice` slot selects `"other_unclassified"` or exceeds `--expansion-entropy`, `dgem` uses [DiffusionGemma](https://gemma.ai/models/diffusiongemma/)'s `"think"` channel (thought budget raised to 120 tokens, with Stage-2 `gemini-3.8-flash` fallback) using the existing option rubrics and Stage-1 probability priors, printing an actionable expansion hint:
 
 ```text
 QUESTION         | TYPE       | VALUE / CHOICE       | CONFIDENCE | STDERR     | AGREEMENT 
@@ -76,7 +76,7 @@ When `--format json` is passed, `dgem decide` serializes the proposals in the to
 
 ### Pattern B: Purpose-Built Discovery Template (`templates/taxonomy_discovery.json.tmpl`)
 
-When designing a dedicated triage + discovery policy from scratch, you can combine **three simultaneous Level-0 canvas slots** (`in_taxonomy`, `primary_category`, `novelty_score`), a **conditional Level-1 drill-down** (`ask_if: {"primary_category": ["other"]}`), and DiffusionGemma's **`"think": 120`** channel in a single `.json.tmpl` file (`templates/taxonomy_discovery.json.tmpl`):
+When designing a dedicated triage + discovery policy from scratch, you can combine **three simultaneous Level-0 canvas slots** (`in_taxonomy`, `primary_category`, `novelty_score`), a **conditional Level-1 drill-down** (`ask_if: {"primary_category": ["other"]}`), and [DiffusionGemma](https://gemma.ai/models/diffusiongemma/)'s **`"think": 120`** channel in a single `.json.tmpl` file (`templates/taxonomy_discovery.json.tmpl`):
 
 ```json
 {

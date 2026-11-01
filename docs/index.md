@@ -3,9 +3,9 @@ title: "Documentation Overview & Index"
 description: "DiffusionGemma (dgem) documentation, organized by audience: build and deploy, confidence and calibration, and policies and decisions."
 ---
 
-# DiffusionGemma (`dgem`) Documentation
+# [DiffusionGemma](https://gemma.ai/models/diffusiongemma/) (`dgem`) Documentation
 
-**`dgem`** turns DiffusionGemma into a zero-shot **decision model**: you describe the decisions you need in a
+**`dgem`** turns [DiffusionGemma](https://gemma.ai/models/diffusiongemma/) into a zero-shot **decision model**: you describe the decisions you need in a
 policy file, and the model answers all of its questions in one forward pass, with a probability for every allowed
 answer and a hesitation score that tells you when to hand the decision off.
 

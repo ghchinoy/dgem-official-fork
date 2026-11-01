@@ -84,7 +84,7 @@ To cost nothing while idle, the upstream `dgemma` Cloud Run GPU service scales d
 2. **The 4 Hardware Boot Stages** (recorded on `dgem.gpu.warmup_lifecycle`):
    * **Stage 1 — Cloud Run GPU Activator (`stage1_activator_ms`)**: GPU VM allocation and container scheduling.
    * **Stage 2 — Cloud Storage $\to$ in-memory staging (`stage2_tmpfs_ms`)**: Copying **17.53 GiB** of NVFP4 safetensors into RAM (several times faster with Direct VPC egress than over public egress).
-   * **Stage 3 — `vLLM` `EngineCore` & `SigLIP` Init (`stage3_vllm_siglip_ms`)**: Loading model weights into GPU VRAM and initializing Gemma 4's `SigLIP` vision encoder.
+   * **Stage 3 — `vLLM` `EngineCore` & `SigLIP` Init (`stage3_vllm_siglip_ms`)**: Loading model weights into GPU VRAM and initializing [Gemma 4](https://gemma.ai)'s `SigLIP` vision encoder.
    * **Stage 4 — First-Inference Triton JIT Compilation (`stage4_triton_jit_ms`)**: Compiling custom `TRITON_ATTN` kernels on the first forward pass.
 3. **Visible `dgem.gpu.cold_start_backoff` Spans**:
    Rather than failing the caller's HTTP request with `502 Bad Gateway`, `dgem.gpu.orchestrate` holds the request open and emits `dgem.gpu.cold_start_backoff` spans (`6,000 ms` each) between retries until `vLLM` answers.
@@ -94,7 +94,7 @@ To cost nothing while idle, the upstream `dgemma` Cloud Run GPU service scales d
 When the GPU is already warm (`dgem.warmup_attempts = 1` and `dgem.gpu.cold_start_wait_ms = 0`), a 3-question decision takes tens of milliseconds of GPU time on an RTX PRO 6000; end to end adds network and routing ([Latency and capacity](latency-capacity.md)). Three things make a decision slower:
 
 1. **Eager Execution (`--enforce-eager`) & `TRITON_ATTN`**:
-   FlashAttention-2 and CUDA Graphs reject DiffusionGemma's mixed **causal-prompt + bidirectional-canvas** attention mask. Running `TRITON_ATTN` in eager mode introduces Python/kernel dispatch overhead across the iterative denoising steps (`dgem.gpu.steps`, typically 8–16 steps per read).
+   FlashAttention-2 and CUDA Graphs reject [DiffusionGemma](https://gemma.ai/models/diffusiongemma/)'s mixed **causal-prompt + bidirectional-canvas** attention mask. Running `TRITON_ATTN` in eager mode introduces Python/kernel dispatch overhead across the iterative denoising steps (`dgem.gpu.steps`, typically 8–16 steps per read).
 2. **2-Stage Conditional Policy DAGs (`dgem.gpu.reads = 2`)**:
    Whenever a `.json.tmpl` policy uses `depends_on` / `ask_if` (for example, `secops_conditional_dag.json.tmpl`), `structured_server.py` partitions the questions into `level 0` and `level 1` in `schedule(qs)`, executing **2 sequential GPU forward passes (`reads=2`)** and doubling `dgem.gpu.denoise`.
 3. **Multimodal `SigLIP` Vision Encoding (`dgem.multimodal = true`)**:
@@ -133,7 +133,7 @@ Every completed span emits a structured JSON log entry with `logging.googleapis.
 
 ### C. Google Cloud Monitoring Operational Dashboard & Log-Based Metrics
 Provisioned via `scripts/setup_cloud_monitoring.sh` (`deploy/monitoring/dgem-operational-dashboard.json`):
-* **Dashboard**: **DiffusionGemma (`dgem`) — Operational & Decision Intelligence Dashboard**
+* **Dashboard**: **[DiffusionGemma](https://gemma.ai/models/diffusiongemma/) (`dgem`) — Operational & Decision Intelligence Dashboard**
 * **Custom Metrics (`logging.googleapis.com/user/*`)**:
   * `dgem_decisions_total` — Decision request volume broken down by `surface`, `template`, `user`, `multimodal`, and `reads`.
   * `dgem_gpu_forward_ms` — Distribution of pure GPU forward-pass latency (`ms`), cleanly excluding cold-start wait time.

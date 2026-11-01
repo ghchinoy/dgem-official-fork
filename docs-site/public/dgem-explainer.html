@@ -132,11 +132,11 @@
 <header class="masthead">
   <div class="eyebrow">Explainer &middot; dgem</div>
   <h1>dgem</h1>
-  <p class="tagline">Templates, one-pass readout, honest uncertainty and routing for a zero-shot decision engine on DiffusionGemma.</p>
+  <p class="tagline">Templates, one-pass readout, honest uncertainty and routing for a zero-shot decision engine on <a href="https://gemma.ai/models/diffusiongemma/">DiffusionGemma</a>.</p>
   <p class="lead"><code>dgem</code> takes some text or an image (the <em>state</em>) and a list of typed questions from a template file. For each question it returns the answer it picked, a probability for every allowed answer, and a <strong>hesitation</strong> score. All questions are answered together in one forward pass. We don't change the model weights. Confident answers are used directly; hesitant ones go to a person or to Gemini.</p>
   <p class="lead">This page explains what you can build, how a decision is read, what the confidence numbers mean and what we learned testing ways to correct them. The documentation starts at <a href="/dgem/">the docs home</a>.</p>
   <div class="status-line">
-    <span class="pill">Base: DiffusionGemma 26B-A4B (frozen weights)</span>
+    <span class="pill">Base: <a href="https://gemma.ai/models/diffusiongemma/">DiffusionGemma</a> 26B-A4B (frozen weights)</span>
     <span class="pill">Serving: Vertex AI, Cloud Run GPU or Apple Silicon</span>
     <span class="pill live">Decision Studio: <code>dgem serve</code> &rarr; localhost:8090</span>
   </div>
@@ -196,7 +196,7 @@
 
 <section id="learned">
   <div class="sec-head"><span class="num">04</span><h2>What we learned trying to correct the probabilities</h2></div>
-  <p>DiffusionGemma, like other language models, favours the first option when it is unsure. We tested ways to fix that at request time; dgem now gates on hesitation and monitors option order on every release instead:</p>
+  <p><a href="https://gemma.ai/models/diffusiongemma/">DiffusionGemma</a>, like other language models, favours the first option when it is unsure. We tested ways to fix that at request time; dgem now gates on hesitation and monitors option order on every release instead:</p>
   <div class="tscroll"><table class="t">
     <thead><tr><th>Technique</th><th>Finding</th><th>Status</th></tr></thead>
     <tbody>

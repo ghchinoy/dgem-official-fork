@@ -191,7 +191,7 @@ docker run --gpus all -p 8080:8080 \
 ## 8. Container lineage
 
 * **Base image**: official `vllm/vllm-openai:nightly`, pinned by commit and digest (`vllm-project/vllm:main` commit
-  `a9eafde59cb`), which includes DiffusionGemma structured generation and constrained reads. Structured mode lets the server send
+  `a9eafde59cb`), which includes [DiffusionGemma](https://gemma.ai/models/diffusiongemma/) structured generation and constrained reads. Structured mode lets the server send
   its own seeded canvas and ask for a read-only denoise step with logprobs for chosen token ids (`logprob_token_ids`);
   constrained reads compute the output layer and sampler over those label ids only, which gives the same answer with
   about a quarter less GPU time per read. vLLM accepts at most 128 such ids per request.

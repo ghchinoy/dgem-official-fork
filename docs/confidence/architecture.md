@@ -15,7 +15,7 @@ Each forward pass generates exactly **one token**. Even if the model only needs 
 
 ## 2. Discrete Block Diffusion & Multi-Canvas Sampling
 
-**DiffusionGemma (`dgemma`)** breaks this sequential bottleneck by using **discrete block diffusion**:
+**[DiffusionGemma](https://gemma.ai/models/diffusiongemma/) (`dgemma`)** breaks this sequential bottleneck by using **discrete block diffusion**:
 
 * **Block-Autoregressive Canvas**: The decoder works on a short canvas (served with **128 rows**, 32 on Cloud Run L4; each request uses the smallest multiple of 16 that holds its answer template) with **bidirectional self-attention**.
 * **Iterative Denoising**: The answer positions begin as seeded noise tokens and are denoised in parallel across a single pass (`steps: 1`, `think: 0`) or a small number of steps.
@@ -191,6 +191,6 @@ The formal technique is **Discrete Diffusion Slot Readout** (or bidirectional ma
 * **Masked Language Modeling (BERT, 2018)**: Evaluating logits across bidirectional transformer encoder layers.
 * **Non-Autoregressive Sequence Generation (Mask-Predict, 2019)**: Parallel canvas denoising.
 * **Discrete Denoising Diffusion (D3PM, 2021; MDLM, 2024)**: Denoising categorical state spaces.
-* **DiffusionGemma (Google DeepMind, 2025/2026)**: The 26B-A4B MoE architecture providing an autoregressive prefix encoder paired with a discrete diffusion decoder with bidirectional attention.
+* **[DiffusionGemma](https://gemma.ai/models/diffusiongemma/) (Google DeepMind, 2025/2026)**: The 26B-A4B MoE architecture providing an autoregressive prefix encoder paired with a discrete diffusion decoder with bidirectional attention.
 
 `dgem` uses stock, unmodified weights from Google DeepMind (`google/diffusiongemma-26B-A4B-it`) and implements this technique directly.

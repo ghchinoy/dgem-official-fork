@@ -5,7 +5,7 @@ description: "Strengths and limits of DiffusionGemma on images: fast categorical
 
 # What dgem Can Do With Images
 
-DiffusionGemma reads an image with Gemma 4's vision tower and answers a policy's questions about it in one forward
+[DiffusionGemma](https://gemma.ai/models/diffusiongemma/) reads an image with [Gemma 4](https://gemma.ai)'s vision tower and answers a policy's questions about it in one forward
 pass. This page says which image questions that works for, based on our tests on photos, synthetic UI scenes and
 app/web screenshots. Re-check on your own images with `dgem bench-vision` (below).
 

@@ -3,7 +3,7 @@ title: Glossary & Mental Models
 description: Plain-English decoder ring and architectural glossary for Discrete Diffusion Decision Models, Uncertainty Calibration, Hesitation-Gating, Dual-Encoders (GTR), TabPFN, and Test-Time Compute cascades.
 ---
 
-New to **DiffusionGemma (`dgem`)**? Because `dgem` sits at the intersection of **Classical Search/Tabular ML**, **Formal Language Automata**, and **Discrete Diffusion Generative Models**, engineers arriving from different specialties often bring different terminology for overlapping ideas.
+New to **[DiffusionGemma](https://gemma.ai/models/diffusiongemma/) (`dgem`)**? Because `dgem` sits at the intersection of **Classical Search/Tabular ML**, **Formal Language Automata**, and **Discrete Diffusion Generative Models**, engineers arriving from different specialties often bring different terminology for overlapping ideas.
 
 Use this page as a **Decoder Ring** to translate between disciplines.
 
@@ -28,7 +28,7 @@ Use this page as a **Decoder Ring** to translate between disciplines.
 
 ### Bidirectional Canvas Attention
 * **In Plain English**: Every input word directly inspects every policy rule and every decision blank—and the decision blanks inspect *each other* simultaneously (`slot_1 <-> slot_2`).
-* **Under the Hood**: Standard LLM decoders apply a lower-triangular causal mask ($t$ can only see $<t$). DiffusionGemma uses a hybrid attention mask (`TRITON_ATTN` in vLLM): causal over the prompt prefix (for KV-cache reuse) and **all-to-all bidirectional** over the answer canvas (served with 128 rows, 32 on Cloud Run L4; each request uses the smallest multiple of 16 rows that holds its answer template).
+* **Under the Hood**: Standard LLM decoders apply a lower-triangular causal mask ($t$ can only see $<t$). [DiffusionGemma](https://gemma.ai/models/diffusiongemma/) uses a hybrid attention mask (`TRITON_ATTN` in vLLM): causal over the prompt prefix (for KV-cache reuse) and **all-to-all bidirectional** over the answer canvas (served with 128 rows, 32 on Cloud Run L4; each request uses the smallest multiple of 16 rows that holds its answer template).
 * **Where You See It in `dgem`**: Enables joint 3-slot triage (`urgent` + `team` + `sentiment`) in one pass.
 
 ### Policy-as-Template (`.json.tmpl`)
@@ -93,7 +93,7 @@ These terms come from [Confidence beyond Shannon: hesitation-gated decisions](/d
 * **Where You See It in `dgem`**: Template rule: neutral, descriptive question ids; no shared letters with different meanings ([templates](/dgem/policies/templates/)).
 
 ### Ballot-Order (Primacy) Bias / Null Prior $p_0$
-* **In Plain English**: Like undecided voters who tick the first name on a ballot, the model leans toward whichever option is listed first (`A`). Given a blank question with meaningless options, `DiffusionGemma` still picks `A` far more often than chance, especially with only 2 or 3 options.
+* **In Plain English**: Like undecided voters who tick the first name on a ballot, the model leans toward whichever option is listed first (`A`). Given a blank question with meaningless options, [`DiffusionGemma`](https://gemma.ai/models/diffusiongemma/) still picks `A` far more often than chance, especially with only 2 or 3 options.
 * **How dgem handles it**: Measured on every release (the regression matrix shuffles option order and reports extra flips) rather than corrected in the pass; see the research notes below.
 * **Under the Hood**: $p_0(k)$ is the model's slot distribution on a content-free input. It estimates the position term $b_{\text{pos}}(k)$ in $z = s(\text{option}) + b_{\text{pos}}(k) + \epsilon$.
 

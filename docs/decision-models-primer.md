@@ -2,7 +2,7 @@
 
 For decades, software engineers and product teams had to choose between two extremes when building classification and decision systems: **fast, rigid classical models** (like Naive Bayes, Logistic Regression, and BERT) or **slow, expensive autoregressive Large Language Models** (chat LLMs such as Gemini).
 
-**DiffusionGemma** introduces a third paradigm: **Discrete Diffusion Decision Models**.
+**[DiffusionGemma](https://gemma.ai/models/diffusiongemma/)** introduces a third paradigm: **Discrete Diffusion Decision Models**.
 
 > ✨ **Interactive Walkthrough**: New to decision models? [**Open the plain-language walkthrough ➔**](https://googlecloudplatform.github.io/dgem/visualizer.html): what a decision model is, one pass vs. word-by-word, when to trust an answer (hesitation), and built-in guardrails. The full version, with a hesitation-gating walkthrough and a glossary, is the **Concepts** tab in Decision Studio (`./bin/dgem serve`).
 
@@ -17,8 +17,8 @@ If you are a Product Manager, Engineering Leader, or Systems Architect, here is 
    Give a traditional model 10,000 labeled customer tickets and it will classify new ones in milliseconds with a genuine confidence score (e.g., `99% Billing` vs. `51% Billing`). **The catch:** Every time your product adds a new routing department or policy rule, your team has to collect new data and retrain the model from scratch.
 2. **Autoregressive LLMs (seconds · Instant Setup, Slow & Overconfident at Runtime)**:
    Chat models let you define categories on the fly in plain English (*zero-shot*). **The catch:** They generate text one word at a time from left to right. Using a chat LLM just to classify a ticket into three fields is like asking a novelist to write a paragraph just to check a box—and because it outputs a plain string (`"department": "Technical"`), **it hides whether the model was 99% certain or guessing 51/49 on a coin flip**.
-3. **Decision Models (`dgem` + `DiffusionGemma` · sub-second · Zero-Shot Setup + Per-Field Uncertainty)**:
-   Instead of generating words left to right, `DiffusionGemma` evaluates all of your decision blanks simultaneously on a fixed canvas in **one single pass**. Because it locks directly onto your allowed options, it cannot emit invalid JSON or an off-menu label—and it returns a per-field **uncertainty score (`Shannon Entropy` in `nats`)**. That score is a strong starting signal, not a guarantee: see [how it can be fooled and how `dgem` checks it](confidence/overview.md).
+3. **Decision Models (`dgem` + [`DiffusionGemma`](https://gemma.ai/models/diffusiongemma/) · sub-second · Zero-Shot Setup + Per-Field Uncertainty)**:
+   Instead of generating words left to right, [`DiffusionGemma`](https://gemma.ai/models/diffusiongemma/) evaluates all of your decision blanks simultaneously on a fixed canvas in **one single pass**. Because it locks directly onto your allowed options, it cannot emit invalid JSON or an off-menu label—and it returns a per-field **uncertainty score (`Shannon Entropy` in `nats`)**. That score is a strong starting signal, not a guarantee: see [how it can be fooled and how `dgem` checks it](confidence/overview.md).
 
 ### How the Entropy Gate Works (The "Triage Nurse vs. Specialist" Pattern)
 In many products, **most incoming requests are obvious** (e.g., *"Our API is returning 502 Bad Gateway"*), while **a minority are genuinely mixed** (e.g., *"Our API is returning 502 Bad Gateway AND we are disputing our $45,000 Q3 invoice"*).
@@ -34,8 +34,8 @@ flowchart TD
     S1 -->|"🟠 High Uncertainty (H ≥ 0.35 nats)\ne.g. ~30% of Traffic (Mixed / Borderline)"| ESC["⚠️ Auto-Escalate to Frontier Model (Gemini 3.8 Flash)\nwith Stage-1 Odds Attached (75% Tech / 23% Billing)"]
 ```
 
-* **When the signal is clear (`H < 0.35 nats`)**: `DiffusionGemma` puts nearly all the probability on one answer. The request takes the **Green Fast Lane**, finishing in sub-second latency at a fraction of LLM cost.
-* **When the request contains conflicting signals (`H ≥ 0.35 nats`)**: `DiffusionGemma` detects its own internal tug-of-war (for example `75% Technical` vs. `23% Billing`) and raises an **Amber Flag**. Your application routes **only that ambiguous slice** to a frontier model (or human reviewer), passing along `DiffusionGemma`'s odds as a diagnostic clue. A size-normalized gate ($\tilde{H} \ge 0.16$, the Hesitation % scale) works across questions with different numbers of options; fit the threshold on your own labelled data ([Calibrate your policy](confidence/calibrate-your-policy.md)).
+* **When the signal is clear (`H < 0.35 nats`)**: [`DiffusionGemma`](https://gemma.ai/models/diffusiongemma/) puts nearly all the probability on one answer. The request takes the **Green Fast Lane**, finishing in sub-second latency at a fraction of LLM cost.
+* **When the request contains conflicting signals (`H ≥ 0.35 nats`)**: [`DiffusionGemma`](https://gemma.ai/models/diffusiongemma/) detects its own internal tug-of-war (for example `75% Technical` vs. `23% Billing`) and raises an **Amber Flag**. Your application routes **only that ambiguous slice** to a frontier model (or human reviewer), passing along [`DiffusionGemma`](https://gemma.ai/models/diffusiongemma/)'s odds as a diagnostic clue. A size-normalized gate ($\tilde{H} \ge 0.16$, the Hesitation % scale) works across questions with different numbers of options; fit the threshold on your own labelled data ([Calibrate your policy](confidence/calibrate-your-policy.md)).
 
 ---
 
@@ -74,7 +74,7 @@ Microsecond / Cheap CPU               Millisecond / C++ Rulebooks       Multi-Se
 * **Fatal Flaw**: **Local context horizon (1–3 token sliding window)**. WFSTs cannot build full-sentence dependency parse trees. As language complexity increases, grammar rulebooks explode into combinatorial conflicts (e.g., tuning a title rule for *"Dr. Smith"* causes street thoroughfares like *"Ocean Dr."* to expand to *"Ocean doctor"*).
 
 ### Era 3: Autoregressive Generative AI (2018–Present)
-* **Core Algorithms**: Causal Transformer Decoders (for example Gemini and Gemma).
+* **Core Algorithms**: Causal Transformer Decoders (for example Gemini and [Gemma](https://gemma.ai)).
 * **Mechanism**: Autoregressive sequence generation. Starting from the prompt, the model serially predicts token $t+1$ conditioned exclusively on preceding tokens $t_1 \dots t$:
   $$P(w_1, \dots, w_T) = \prod_{t=1}^T P(w_t \mid w_{<t})$$
 * **Strength**: Deep semantic reasoning, world knowledge, and zero-shot instruction following.
@@ -100,7 +100,7 @@ When deploying mission-critical systems (such as high-volume customer triage, au
 
 ## 3. How Discrete Diffusion Models Work
 
-Rather than generating sequential text, DiffusionGemma treats a decision as a **discrete canvas denoising problem**:
+Rather than generating sequential text, [DiffusionGemma](https://gemma.ai/models/diffusiongemma/) treats a decision as a **discrete canvas denoising problem**:
 
 ```
 [System Schema] + [User Input Data] + [Pre-Allocated Canvas: <slot_1> <slot_2> <slot_3>]
@@ -122,7 +122,7 @@ Rather than generating sequential text, DiffusionGemma treats a decision as a **
 Instead of starting an open-ended token generation loop, the system sets aside a short discrete canvas (served with 128 rows; a typical request uses 16 to 64). The canvas holds an answer template with one line per question (`urgent: A`), and each question in your decision schema ([`templates/support_triage.json.tmpl`](../templates)) gets exactly one answer token on it.
 
 ### 2. Full Bidirectional Attention
-While autoregressive LLMs apply a causal mask (token 5 cannot look ahead at token 20), DiffusionGemma applies **bidirectional self-attention** across the entire prompt and canvas.
+While autoregressive LLMs apply a causal mask (token 5 cannot look ahead at token 20), [DiffusionGemma](https://gemma.ai/models/diffusiongemma/) applies **bidirectional self-attention** across the entire prompt and canvas.
 * The slot tokens attend to all prompt tokens simultaneously.
 * Crucially, **the slot tokens attend to each other**. The model's classification of `team = engineering` directly influences its confidence on `urgent = yes` during the exact same forward pass.
 
@@ -132,9 +132,9 @@ At the target slot position, the model projects the latent representation direct
 ### 4. Dual-Mode Uncertainty Telemetry & Epistemic Calibration (`ChaosNLI`)
 Because decision models project onto restricted candidate vocabularies rather than open-ended decoding paths, they expose clean per-slot probabilities. These are a strong *uncertainty signal*, though not automatically *calibrated* probabilities (calibration to a real deployment needs labeled data; see [Confidence beyond Shannon](confidence/overview.md)):
 * **Empirical Standard Error ($\pm\sigma$)**: On Apple Silicon Metal, multi-seed perturbation noise draws reveal whether the model has high consensus ($\pm 0.0000$) or ambiguity ($\pm 0.1500$).
-* **Monotonic Shannon Entropy ($H = -\sum p_k \ln p_k$)**: On items where human annotators disagree (for example `ChaosNLI`, which has many annotators per item, included in `dgem bench-calibration`), DiffusionGemma's single-pass entropy tends to be higher, and accuracy lower, than on items where annotators agree. That makes an entropy threshold a natural trigger to abstain or escalate to a reasoning model.
+* **Monotonic Shannon Entropy ($H = -\sum p_k \ln p_k$)**: On items where human annotators disagree (for example `ChaosNLI`, which has many annotators per item, included in `dgem bench-calibration`), [DiffusionGemma](https://gemma.ai/models/diffusiongemma/)'s single-pass entropy tends to be higher, and accuracy lower, than on items where annotators agree. That makes an entropy threshold a natural trigger to abstain or escalate to a reasoning model.
 
-> **But raw entropy can be fooled.** `DiffusionGemma` has a habit of picking whichever option is listed first ("Box A"). On a borderline question that habit can make a coin flip *look* like near-certainty, and the entropy gate then waves it through. **[Confidence beyond Shannon: hesitation-gated decisions](confidence/overview.md)** explains how `dgem` handles this: it hands hesitant answers to a larger model, keeps the answer template and prompt layout from distorting the probabilities, monitors option-order bias on every release, and calibrates per domain.
+> **But raw entropy can be fooled.** [`DiffusionGemma`](https://gemma.ai/models/diffusiongemma/) has a habit of picking whichever option is listed first ("Box A"). On a borderline question that habit can make a coin flip *look* like near-certainty, and the entropy gate then waves it through. **[Confidence beyond Shannon: hesitation-gated decisions](confidence/overview.md)** explains how `dgem` handles this: it hands hesitant answers to a larger model, keeps the answer template and prompt layout from distorting the probabilities, monitors option-order bias on every release, and calibrates per domain.
 
 ### 5. Templates as Executable Decision Policies (`Policy-as-Code`)
 In classical ML or fine-tuned encoder architectures (such as a fine-tuned `DeBERTa-v3` safety classifier), the decision policy is baked into static linear classification weights. If security engineering adds a 4th trajectory hijack state (`injection_point` vs. `hijacked` vs. `failed_injection`), the classifier head must be retrained.
@@ -147,7 +147,7 @@ In `dgem`, a declarative `.json.tmpl` file **is** the classifier head:
 
 ## 4. The Unified AI Architecture: A Three-Tier Hierarchy
 
-DiffusionGemma does not replace FSTs or conversational LLMs; it fills the critical missing middle tier of modern enterprise architectures:
+[DiffusionGemma](https://gemma.ai/models/diffusiongemma/) does not replace FSTs or conversational LLMs; it fills the critical missing middle tier of modern enterprise architectures:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -174,9 +174,9 @@ DiffusionGemma does not replace FSTs or conversational LLMs; it fills the critic
 1. **Tier 1 (The Deterministic Fast Path)**:
    Use classical C++ WFSTs or regular expressions for unambiguous transformations. If text contains `"$5.99"`, an FST expands it to *"five dollars ninety-nine cents"* in about a millisecond. Never pay GPU overhead for deterministic string replacement.
 2. **Tier 2 (The Discrete Decision Model)**:
-   When inputs exhibit semantic ambiguity, polysemy, negation, or require multi-rubric policy enforcement, route to **DiffusionGemma**. In one forward pass, it resolves the decision policy with full bidirectional context, 100% schema enforcement, and per-slot Shannon entropy $H$.
+   When inputs exhibit semantic ambiguity, polysemy, negation, or require multi-rubric policy enforcement, route to **[DiffusionGemma](https://gemma.ai/models/diffusiongemma/)**. In one forward pass, it resolves the decision policy with full bidirectional context, 100% schema enforcement, and per-slot Shannon entropy $H$.
 3. **Tier 3 (The Conversational Reasoning Engine)**:
-   When DiffusionGemma's uncertainty telemetry flags high uncertainty ($H > 0.30$ nats—such as on human-contested `ChaosNLI` items or multi-hop `ANLI-R3` traps), escalate to a Thinking / Autoregressive LLM (like Google Cloud Vertex AI Gemini) to execute serial scratchpad reasoning or synthesize an explanation for a human reviewer.
+   When [DiffusionGemma](https://gemma.ai/models/diffusiongemma/)'s uncertainty telemetry flags high uncertainty ($H > 0.30$ nats—such as on human-contested `ChaosNLI` items or multi-hop `ANLI-R3` traps), escalate to a Thinking / Autoregressive LLM (like Google Cloud Vertex AI Gemini) to execute serial scratchpad reasoning or synthesize an explanation for a human reviewer.
 
 ---
 
@@ -191,4 +191,4 @@ DiffusionGemma does not replace FSTs or conversational LLMs; it fills the critic
 | **Does it know when it's unsure?** | Overconfident out-of-domain | Uncalibrated sequence logprobs | **Often: entropy rises with human disagreement, but option order can hide it ([hesitation-gating](confidence/overview.md))** |
 | **Can it handle vision?** | Separate vision classifiers | Yes (multimodal autoregression) | **Yes (native SigLIP vision canvas)** |
 
-By decoupling **deep contextual reasoning** from **slow sequential text generation**, DiffusionGemma and `dgem` bring the power of 26B foundation models to sub-second, zero-shot decision engineering.
+By decoupling **deep contextual reasoning** from **slow sequential text generation**, [DiffusionGemma](https://gemma.ai/models/diffusiongemma/) and `dgem` bring the power of 26B foundation models to sub-second, zero-shot decision engineering.
